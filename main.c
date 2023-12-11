@@ -4,6 +4,9 @@
 
 #define GENRES {"Horror", "Abenteuer", "Romantik", "Sachbuch" }
 
+// #define SHOWALLOCATIONS
+// #define SHOWFREEINGS
+
 typedef enum {
     horror, abenteuer, romantik, sachbuch
 } E_Genre;
@@ -50,18 +53,29 @@ int main() {
                 printf("\nGeben Sie den Titel ein: ");
                 scanf(" %s", title);
                 while(genre < 1 || genre > 4){
-                    printf("Geben Sie das Genre ein. Horror (1), Abenteuer (2), Romantik (3), Sachbuch (4): ");
+                    printf("\nGeben Sie das Genre ein. Horror (1), Abenteuer (2), Romantik (3), Sachbuch (4): ");
                     scanf(" %d", &genre);
+                    if (genre < 1 || genre > 4){
+                        printf("\nUngueltige Eingabe!");
+                    }
                 }
                 while(publicationYear < 1){
-                    printf("Geben Sie das Erscheinungsjahr ein: ");
+                    printf("\nGeben Sie das Erscheinungsjahr ein: ");
                     scanf(" %d", &publicationYear);
+                    if (publicationYear < 1){
+                        printf("\nUngueltige Eingabe!");
+                    }
                 }
                 while(amount < 1) {
-                    printf("Geben Sie ein wieviele Exemplare vorhanden sind: ");
+                    printf("\nGeben Sie ein wieviele Exemplare vorhanden sind: ");
                     scanf(" %d", &amount);
+                    if (amount < 1){
+                        printf("\nUngueltige Eingabe!");
+                    }
                 }
-
+                genre = 0;
+                publicationYear = 0;
+                amount = 0;
                 inventoryHead = addBookNodeFront(inventoryHead, createBookNode(title, genre, publicationYear, amount), &lengthInventory);
                 break;
             case 'b':
@@ -78,20 +92,19 @@ int main() {
                 break;
         }
     }
-
     return 0;
 }
 
 bookNode* createBookNode(char title[32], E_Genre genre, int publicationYear, int amount) {
     bookNode* newNode = malloc(sizeof(bookNode));
-    printf("node allocated");
-
+    #ifdef SHOWALLOCATIONS
+        printf("node allocated");
+    #endif
     strcpy(newNode->content.title, title);
     newNode->content.genre = genre;
     newNode->content.publicationYear = publicationYear;
     newNode->content.amount = amount;
     newNode->next = NULL;
-
     return newNode;
 }
 
@@ -104,10 +117,7 @@ bookNode* addBookNodeFront(bookNode* inventoryHead, bookNode* newNode, int* leng
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32] ){
     bookNode* currentNode = inventoryHead;
     for(int i = 0; i < lengthInventory; i++){
-        printf("\n%s", currentNode->content.title);
-        printf("\n%s", genres[currentNode->content.genre]);
-        printf("\n%d", currentNode->content.publicationYear);
-        printf("\n%d", currentNode->content.amount);
+        printf("\n%d: %s, %s, (%d)", i+1, currentNode->content.title, genres[currentNode->content.genre], currentNode->content.publicationYear);
         currentNode = currentNode->next;
     }
 }
@@ -117,7 +127,9 @@ void freeInventory (bookNode* inventoryHead, int lengthInventory){
     for(int i = 0; i < lengthInventory; i++){
         bookNode* nextNode = currentNode->next;
         free(currentNode);
-        printf("\nNode freed");
+        #ifdef SHOWFREEINGS
+                printf("\nNode freed");
+        #endif
         currentNode = nextNode;
     }
 }
