@@ -32,6 +32,10 @@ int main() {
     char genres[4][32] = GENRES;
     int lengthInventory = 0;
     char selected = 'a';
+    char title[32];
+    int genre;
+    int publicationYear = 0;
+    int amount = 0;
 
     bookNode* inventoryHead = NULL;
 
@@ -43,7 +47,22 @@ int main() {
 
         switch(selected){
             case 'n':
-                inventoryHead = addBookNodeFront(inventoryHead, createBookNode("Huhu", horror, 1999, 2), &lengthInventory);
+                printf("\nGeben Sie den Titel ein: ");
+                scanf(" %s", title);
+                while(genre < 1 || genre > 4){
+                    printf("Geben Sie das Genre ein. Horror (1), Abenteuer (2), Romantik (3), Sachbuch (4): ");
+                    scanf(" %d", &genre);
+                }
+                while(publicationYear < 1){
+                    printf("Geben Sie das Erscheinungsjahr ein: ");
+                    scanf(" %d", &publicationYear);
+                }
+                while(amount < 1) {
+                    printf("Geben Sie ein wieviele Exemplare vorhanden sind: ");
+                    scanf(" %d", &amount);
+                }
+
+                inventoryHead = addBookNodeFront(inventoryHead, createBookNode(title, genre, publicationYear, amount), &lengthInventory);
                 break;
             case 'b':
                 break;
