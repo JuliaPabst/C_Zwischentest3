@@ -31,9 +31,11 @@ typedef struct borrowNode {
 
 bookNode* createBookNode(char title[32], E_Genre genre, int publicationYear, int amount);
 
-borrowNode* createBorrowNode(int selectedBookToBorrow, char name[32], bookNode* inventoryHead);
+borrowNode* createBorrowNode(char selectedTitle[32], char name[32]);
 
 bookNode* addBookNodeFront(bookNode* inventoryHead, bookNode* newNode, int* lengthInventory);
+
+char* checkIfAllAreBorrowed(bookNode* inventoryHead, int selectedBookToBorrow);
 
 borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNode, int* lengthBorrowedNodes);
 
@@ -50,10 +52,11 @@ int main() {
     char selected = 'a';
 
     char title[32];
-    int genre;
+    int genre = 0;
     int publicationYear = 0;
     int amount = 0;
     int selectedBookToBorrow = 0;
+    char selectedTitle[32];
     char name[32];
 
     bookNode* inventoryHead = NULL;
@@ -98,20 +101,24 @@ int main() {
             case 'b': // borrow book
                 if (lengthInventory < 1){
                     printf("\nEs sind keine Buecher im Inventar vorhanden.");
+                    break;
                 }
                 printInventory(inventoryHead, lengthInventory, genres);
-                while(selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory){
+                do{
                     printf("\nWelchen Titel moechten Sie leihen? (1-%d): ", lengthInventory);
                     scanf(" %d", &selectedBookToBorrow);
+                    char* borrowedTitle = checkIfAllAreBorrowed(inventoryHead, selectedBookToBorrow);
                     if (selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory) {
                         printf("\nUngueltige Eingabe!");
                     }
-                }
-
-                printf("\nGeben Sie Ihren Namen ein: ");
-                scanf(" %s", name);
-
-                booksBorrowedHead = addBorrowNodeFront(booksBorrowedHead, createBorrowNode(selectedBookToBorrow, name, inventoryHead), &lengthBorrowedNodes);
+                    if(borrowedTitle == NULL) {
+                        printf("\nBereits alle Exemplare ausgeliehen!");
+                    } else {
+                        printf("\nGeben Sie Ihren Namen ein: ");
+                        scanf(" %s", name);
+                        booksBorrowedHead = addBorrowNodeFront(booksBorrowedHead, createBorrowNode(selectedTitle, name), &lengthBorrowedNodes);
+                    }
+                } while(selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory);
                 break;
             case 'r': // return book
                 break;
@@ -148,21 +155,31 @@ bookNode* addBookNodeFront(bookNode* inventoryHead, bookNode* newNode, int* leng
     return newNode;
 }
 
-borrowNode* createBorrowNode(int selectedBookToBorrow, char name[32], bookNode* inventoryHead){
+borrowNode* createBorrowNode(char titleToBorrow[32], char name[32]){
     borrowNode* newNode = malloc(sizeof(borrowNode));
-    bookNode* borrowedBook = inventoryHead;
+
     #ifdef SHOWALLOCATIONS
         printf("borrow node allocated");
     #endif
 
-    for(int i = 0; i < selectedBookToBorrow; i++){
-        borrowedBook = borrowedBook->next;
+        strcpy(newNode->title, titleToBorrow);
+        strcpy(newNode->name, name);
+        newNode->next = NULL;
+        return newNode;
+
+}
+
+char* checkIfAllAreBorrowed(bookNode* inventoryHead, int selectedBookToBorrow){
+    bookNode* currentBook = inventoryHead;
+    for (int i = 1; i < selectedBookToBorrow && currentBook != NULL; i++) {
+        currentBook = currentBook->next;
     }
 
-    strcpy(newNode->title, borrowedBook->content.title);
-    strcpy(newNode->name, name);
-    newNode->next = NULL;
-    return newNode;
+    if (currentBook == NULL || currentBook->content.amount <= 0) {
+        return NULL;
+    } else {
+        return currentBook->content.title;
+    }
 }
 
 borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNode, int* lengthBorrowedNodes){
