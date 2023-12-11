@@ -1,0 +1,10 @@
+"/Users/julia/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/232.8660.186/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=/Users/julia/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/232.8660.186/CLion.app/Contents/bin/ninja/mac/ninja" -G Ninja -S "/Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3" -B "/Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3/cmake-build-debug"
+-- The C compiler identification is AppleClang 15.0.0.15000040
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done (7.9s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3/cmake-build-debug

@@ -1,0 +1,3 @@
+/Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3/cmake-build-debug/CMakeFiles/Zwischentest3.dir
+/Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/julia/Desktop/Knowledge Centre/FH Technikum/Semester1/Prozedurales Sprachenlabor/Zwischentest3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
