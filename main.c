@@ -100,7 +100,8 @@ int main() {
                 break;
             case 'b': // borrow book
                 if (lengthInventory < 1){
-                    printf("\nEs sind keine Buecher im Inventar vorhanden.");
+
+                    printf("\n\nEs sind keine Buecher im Inventar vorhanden.");
                     break;
                 }
                 printInventory(inventoryHead, lengthInventory, genres);
@@ -110,13 +111,14 @@ int main() {
                     char* borrowedTitle = checkIfAllAreBorrowed(inventoryHead, selectedBookToBorrow);
                     if (selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory) {
                         printf("\nUngueltige Eingabe!");
-                    }
-                    if(borrowedTitle == NULL) {
-                        printf("\nBereits alle Exemplare ausgeliehen!");
                     } else {
-                        printf("\nGeben Sie Ihren Namen ein: ");
-                        scanf(" %s", name);
-                        booksBorrowedHead = addBorrowNodeFront(booksBorrowedHead, createBorrowNode(selectedTitle, name), &lengthBorrowedNodes);
+                        if(borrowedTitle == NULL) {
+                            printf("\nBereits alle Exemplare ausgeliehen!");
+                        } else {
+                            printf("\nGeben Sie Ihren Namen ein: ");
+                            scanf(" %s", name);
+                            booksBorrowedHead = addBorrowNodeFront(booksBorrowedHead, createBorrowNode(selectedTitle, name), &lengthBorrowedNodes);
+                        }
                     }
                 } while(selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory);
                 break;
@@ -130,6 +132,9 @@ int main() {
             case 'x':
                 freeInventory (inventoryHead, lengthInventory);
                 freeBorrowedNodes (booksBorrowedHead, lengthBorrowedNodes);
+                break;
+            default:
+                printf("\nUngueltige Eingabe!");
                 break;
         }
     }
