@@ -90,7 +90,7 @@ int main() {
                         printf("\nUngueltige Eingabe!");
                     }
                 }
-                inventoryHead = addBookNodeFront(inventoryHead, createBookNode(title, genre, publicationYear, amount), &lengthInventory);
+                inventoryHead = addBookNodeFront(inventoryHead, createBookNode(title, --genre, publicationYear, amount), &lengthInventory);
                 genre = 0;
                 publicationYear = 0;
                 amount = 0;
@@ -175,7 +175,7 @@ borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNod
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32] ){
     bookNode* currentNode = inventoryHead;
     for(int i = 0; i < lengthInventory; i++){
-        printf("\n%d: %s, %s, (%d)", i+1, currentNode->content.title, genres[currentNode->content.genre], currentNode->content.publicationYear);
+        printf("\n%d: %s, %s (%d)", i+1, currentNode->content.title, genres[currentNode->content.genre], currentNode->content.publicationYear);
         currentNode = currentNode->next;
     }
     printf("\n");
