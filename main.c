@@ -26,16 +26,39 @@ bookNode* addBookNodeFront(bookNode* inventoryHead, bookNode* newNode, int* leng
 
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32]);
 
+void freeInventory (bookNode* inventoryHead, int lengthInventory);
 
 int main() {
     char genres[4][32] = GENRES;
     int lengthInventory = 0;
+    char selected = 'a';
 
     bookNode* inventoryHead = NULL;
 
-    inventoryHead = addBookNodeFront(inventoryHead, createBookNode("Huhu", horror, 1999, 2), &lengthInventory);
+    while(selected != 'x'){
+        printf("\nNeues Buch eingeben (n), Buch ausleihen (b), Buch zurueckgeben (r), Buecher auflisten (l), Buecher sortieren (s), Programm beenden (x)\n"
+               "Auswahl: ");
 
-    printInventory(inventoryHead, lengthInventory, genres);
+        scanf(" %c", &selected);
+
+        switch(selected){
+            case 'n':
+                inventoryHead = addBookNodeFront(inventoryHead, createBookNode("Huhu", horror, 1999, 2), &lengthInventory);
+                break;
+            case 'b':
+                break;
+            case 'r':
+                break;
+            case 'l':
+                printInventory(inventoryHead, lengthInventory, genres);
+                break;
+            case 's':
+                break;
+            case 'x':
+                freeInventory (inventoryHead, lengthInventory);
+                break;
+        }
+    }
 
     return 0;
 }
@@ -67,5 +90,15 @@ void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4
         printf("\n%d", currentNode->content.publicationYear);
         printf("\n%d", currentNode->content.amount);
         currentNode = currentNode->next;
+    }
+}
+
+void freeInventory (bookNode* inventoryHead, int lengthInventory){
+    bookNode* currentNode = inventoryHead;
+    for(int i = 0; i < lengthInventory; i++){
+        bookNode* nextNode = currentNode->next;
+        free(currentNode);
+        printf("\nNode freed");
+        currentNode = nextNode;
     }
 }
