@@ -45,20 +45,11 @@ borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNod
 
 borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes, int selectedBookToReturn, bookNode* inventoryHead);
 
-void swap(S_Book* a, S_Book* b){
-    S_Book temp = *a;
-    *a = *b;
-    *b = temp;
-}
+void addReturnedBookToAmount(char title[32], bookNode* inventoryHead, int selectedBookToReturn);
 
-void sortArrayByPublishingYearBubbleSort (S_Book* booksSorted, int n){
-    {
-        for(int i = 0; i<n-1; ++i)
-            for(int j = 0; j<n-1; ++j)
-                if(booksSorted[j].publicationYear > booksSorted[j+1].publicationYear)
-                    swap(&booksSorted[j], &booksSorted[j+1]);
-    }
-}
+void swap(S_Book* a, S_Book* b);
+
+void sortArrayByPublishingYearBubbleSort (S_Book* booksSorted, int n);
 
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32]);
 
@@ -70,21 +61,7 @@ void freeInventory (bookNode* inventoryHead, int lengthInventory);
 
 void freeBorrowedNodes (borrowNode* booksBorrowedHead, int lengthBorrowedNodes);
 
-void addReturnedBookToAmount(char title[32], bookNode* inventoryHead, int selectedBookToReturn){
-    bookNode* amountNode = inventoryHead;
 
-   /* printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
-    printf("\n next amount title: %s", (amountNode->next)->content.title); */
-    while(strcmp(title, amountNode->content.title) != 0){
-        amountNode = amountNode->next;
-       // printf("\nnext");
-    }
-
-   // printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
-
-    (amountNode->content.amount)++;
-  //  printf("\n%s amount: %d", amountNode->content.title, amountNode->content.amount);
-}
 
 int main() {
     char genres[4][32] = GENRES;
@@ -334,6 +311,36 @@ borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes
     return head;
 }
 
+void addReturnedBookToAmount(char title[32], bookNode* inventoryHead, int selectedBookToReturn){
+    bookNode* amountNode = inventoryHead;
+
+    /* printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
+     printf("\n next amount title: %s", (amountNode->next)->content.title); */
+    while(strcmp(title, amountNode->content.title) != 0){
+        amountNode = amountNode->next;
+        // printf("\nnext");
+    }
+
+    // printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
+
+    (amountNode->content.amount)++;
+    //  printf("\n%s amount: %d", amountNode->content.title, amountNode->content.amount);
+}
+
+void swap(S_Book* a, S_Book* b){
+    S_Book temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sortArrayByPublishingYearBubbleSort (S_Book* booksSorted, int n){
+    {
+        for(int i = 0; i<n-1; ++i)
+            for(int j = 0; j<n-1; ++j)
+                if(booksSorted[j].publicationYear > booksSorted[j+1].publicationYear)
+                    swap(&booksSorted[j], &booksSorted[j+1]);
+    }
+}
 
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32] ){
     bookNode* currentNode = inventoryHead;
