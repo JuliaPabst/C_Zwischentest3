@@ -39,19 +39,52 @@ int checkIfAllAreBorrowed(bookNode* inventoryHead, int selectedBookToBorrow);
 
 void findTitleToBorrow(bookNode* inventoryHead, int selectedBookToBorrow, char *titleToBorrow);
 
-int checkIfTheyAlreadyBorrowed(borrowNode* booksBorrowedHead, int lengthBorrowedNodes, char title[32], char name[32]);
+int checkIfTheyAlreadyBorrowed(borrowNode* booksBorrowedHead, int lengthBorrowedNodes, char title[32], char name[32], bookNode* inventoryHead, int selectedBookToBorrow);
 
 borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNode, int* lengthBorrowedNodes);
 
-borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes, int selectedBookToReturn);
+borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes, int selectedBookToReturn, bookNode* inventoryHead);
+
+void swap(S_Book* a, S_Book* b){
+    S_Book temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sortArrayByPublishingYearBubbleSort (S_Book* booksSorted, int n){
+    {
+        for(int i = 0; i<n-1; ++i)
+            for(int j = 0; j<n-1; ++j)
+                if(booksSorted[j].publicationYear > booksSorted[j+1].publicationYear)
+                    swap(&booksSorted[j], &booksSorted[j+1]);
+    }
+}
 
 void printInventory (bookNode* inventoryHead, int lengthInventory, char genres[4][32]);
 
 void printBorrowed (borrowNode* booksBorrowedHead, int lengthBorrowedNodes);
 
+void printSorted(bookNode* inventoryHead, int lengthInventory, char genres[4][32]);
+
 void freeInventory (bookNode* inventoryHead, int lengthInventory);
 
 void freeBorrowedNodes (borrowNode* booksBorrowedHead, int lengthBorrowedNodes);
+
+void addReturnedBookToAmount(char title[32], bookNode* inventoryHead, int selectedBookToReturn){
+    bookNode* amountNode = inventoryHead;
+
+   /* printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
+    printf("\n next amount title: %s", (amountNode->next)->content.title); */
+    while(strcmp(title, amountNode->content.title) != 0){
+        amountNode = amountNode->next;
+       // printf("\nnext");
+    }
+
+   // printf("\ntitle: %s, amount title: %s", title, amountNode->content.title);
+
+    (amountNode->content.amount)++;
+  //  printf("\n%s amount: %d", amountNode->content.title, amountNode->content.amount);
+}
 
 int main() {
     char genres[4][32] = GENRES;
@@ -127,7 +160,7 @@ int main() {
                             printf("\nBereits alle Exemplare ausgeliehen!");
                         } else {
                            findTitleToBorrow(inventoryHead, selectedBookToBorrow, titleToBorrow);
-                             if(checkIfTheyAlreadyBorrowed(booksBorrowedHead, lengthBorrowedNodes, titleToBorrow, name)){
+                             if(checkIfTheyAlreadyBorrowed(booksBorrowedHead, lengthBorrowedNodes, titleToBorrow, name, inventoryHead, selectedBookToBorrow)){
                                 printf("\nSie haben diesen Titel bereits ausgeliehen!");
                             } else {
                                 booksBorrowedHead = addBorrowNodeFront(booksBorrowedHead, createBorrowNode(titleToBorrow, name), &lengthBorrowedNodes);
@@ -137,10 +170,10 @@ int main() {
                 } while(selectedBookToBorrow < 1 || selectedBookToBorrow > lengthInventory);
                 break;
             case 'r': // return book
-            printBorrowed (booksBorrowedHead, lengthBorrowedNodes);
-               if(booksBorrowedHead == NULL){
+                printBorrowed (booksBorrowedHead, lengthBorrowedNodes);
+                if(lengthBorrowedNodes == 0){
                    printf("\n\nEs sind keine Titel ausgeliehen!");
-               }  else {
+                }  else {
                    while(selectedBookToReturn < 1){
                        printf("\nWelchen Titel moechten Sie retournieren? (1-%d): ", lengthBorrowedNodes);
                        scanf(" %d", &selectedBookToReturn);
@@ -148,18 +181,17 @@ int main() {
                            printf("\nUngueltige Eingabe!");
                        }
                    }
-               }
-
-               booksBorrowedHead = returnBookAt(booksBorrowedHead, &lengthBorrowedNodes, selectedBookToReturn);
-               selectedBookToReturn = 0;
-
-                 break;
+                    booksBorrowedHead = returnBookAt(booksBorrowedHead, &lengthBorrowedNodes, selectedBookToReturn, inventoryHead);
+                    selectedBookToReturn = 0;
+                }
+               break;
             case 'l': // list books
                 printInventory(inventoryHead, lengthInventory, genres);
                 break;
             case 's': // sort books
+                printSorted(inventoryHead, lengthInventory, genres);
                 break;
-            case 'x':
+            case 'x': // exit program
                 freeInventory (inventoryHead, lengthInventory);
                 freeBorrowedNodes (booksBorrowedHead, lengthBorrowedNodes);
                 break;
@@ -225,11 +257,11 @@ void findTitleToBorrow(bookNode* inventoryHead, int selectedBookToBorrow, char *
         currentNode = currentNode->next;
     }
     strcpy(titleToBorrow, currentNode->content.title);
-    (currentNode->content.amount)--;
+
 }
 
 
-int checkIfTheyAlreadyBorrowed(borrowNode* booksBorrowedHead, int lengthBorrowedNodes, char title[32], char name[32]){
+int checkIfTheyAlreadyBorrowed(borrowNode* booksBorrowedHead, int lengthBorrowedNodes, char title[32], char name[32], bookNode* inventoryHead, int selectedBookToBorrow){
     borrowNode* currentNode = booksBorrowedHead;
     for(int i = 0; i < lengthBorrowedNodes; i++){
         if(strcmp(currentNode->title, title) == 0 && strcmp(currentNode->name, name) == 0){
@@ -237,6 +269,15 @@ int checkIfTheyAlreadyBorrowed(borrowNode* booksBorrowedHead, int lengthBorrowed
         }
         currentNode = currentNode->next;
     }
+
+    bookNode* amountNode = inventoryHead;
+
+    for(int i = 0; i < selectedBookToBorrow - 1; i++){
+        amountNode = amountNode->next;
+    }
+    (amountNode->content.amount)--;
+    // printf("\n%s amount: %d", amountNode->content.title, amountNode->content.amount);
+
     return 0;
 }
 
@@ -247,7 +288,7 @@ borrowNode* addBorrowNodeFront(borrowNode* booksBorrowedHead, borrowNode* newNod
     return newNode;
 }
 
-borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes, int selectedBookToReturn){
+borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes, int selectedBookToReturn, bookNode* inventoryHead){
     borrowNode* nodeToDelete = NULL;
     borrowNode* head = booksBorrowedHead;
 
@@ -255,13 +296,17 @@ borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes
     if (selectedBookToReturn == 1) {
         nodeToDelete = booksBorrowedHead;
         booksBorrowedHead = nodeToDelete->next;
+        addReturnedBookToAmount(nodeToDelete->title, inventoryHead, selectedBookToReturn);
         free(nodeToDelete);
         (*lengthBorrowedNodes)--;
+
         return booksBorrowedHead;
-    } else {
+    } else
+    {
         borrowNode* previousNode = head;
         if(*lengthBorrowedNodes == 2){
            nodeToDelete = previousNode->next;
+            addReturnedBookToAmount(nodeToDelete->title, inventoryHead, selectedBookToReturn);
             free(nodeToDelete);
             previousNode->next = NULL;
             (*lengthBorrowedNodes)--;
@@ -269,14 +314,15 @@ borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes
            for (int i = 0; i < selectedBookToReturn - 2; i++) {
             previousNode = previousNode->next;
             }
-
             nodeToDelete = previousNode->next;
             previousNode->next = nodeToDelete->next;
+            addReturnedBookToAmount(nodeToDelete->title, inventoryHead, selectedBookToReturn);
             free(nodeToDelete);
             (*lengthBorrowedNodes)--;
         }
-    return head;
     }
+
+   // printf("\n book returned");
 
 
 
@@ -284,7 +330,6 @@ borrowNode* returnBookAt(borrowNode* booksBorrowedHead, int* lengthBorrowedNodes
     #ifdef SHOWFREEINGS
             printf("\nNode freed");
     #endif
-
 
     return head;
 }
@@ -309,6 +354,25 @@ void printBorrowed (borrowNode* booksBorrowedHead, int lengthBorrowedNodes){
         printf("\n");
     }
 
+}
+
+void printSorted(bookNode* inventoryHead, int lengthInventory, char genres[4][32]){
+    S_Book booksSorted[lengthInventory];
+    bookNode* currentNode = inventoryHead;
+
+    for(int i = 0; i < lengthInventory; i++){
+        booksSorted[i] = currentNode->content;
+        if(currentNode != NULL){
+            currentNode = currentNode->next;
+        }
+    }
+
+    sortArrayByPublishingYearBubbleSort(booksSorted, lengthInventory);
+
+    for(int i = 0; i < lengthInventory; i++){
+        printf("\n%d: %s, %s (%d)", i+1, booksSorted[i].title, genres[booksSorted[i].genre], booksSorted[i].publicationYear);
+    }
+    printf("\n");
 }
 
 void freeInventory (bookNode* inventoryHead, int lengthInventory){
